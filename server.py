@@ -4,44 +4,44 @@ import os
 import requests
 from markdownify import markdownify as md
 
-from obsidian.schemas import Workspace
+from obsidian.schemas import Vault
 
 mcp = FastMCP("obsidian")
 
 
-workspaces = {
-    "personal": Workspace(
+vaults = {
+    "personal": Vault(
         name="personal",
         directory="/Users/calebvandyke/Google Drive/My Drive/journal/personal",
-        description="This workspace contains personal journal entries. It includes things like my daily journal entries, my notes on books I've read, and recipes.",
+        description="This vaults contains personal journal entries. It includes things like my daily journal entries, my notes on books I've read, and recipes.",
     )
 }
 
 
-for workspace in workspaces.values():
+for vault in vaults.values():
 
-    @mcp.resource(f"workspace://{workspace.name}")
-    def get_workspace():
-        return workspace
-
-
-@mcp.tool(description="Returns a list of files in a given workspace path")
-def list_workspace_files(workspace_name: str, path: str, recursive: bool = False):
-    workspace = workspaces[workspace_name]
-    return workspace.get_workspace_files(path, recursive)
+    @mcp.resource(f"vault://{vault.name}")
+    def get_value():
+        return vault
 
 
-@mcp.tool(description="Get the contents of a file contained in a workspace")
-def get_workspace_file(workspace_name: str, file_relative_path: str):
-    workspace = workspaces[workspace_name]
-    with open(os.path.join(workspace.directory, file_relative_path), "r") as f:
+@mcp.tool(description="Returns a list of files in a given vault path")
+def list_vault_files(vault_name: str, path: str, recursive: bool = False):
+    vault = vaults[vault_name]
+    return vault.get_valut_files(path, recursive)
+
+
+@mcp.tool(description="Get the contents of a file contained in a vault")
+def get_vault_file(vault_name: str, file_relative_path: str):
+    vault = vaults[vault_name]
+    with open(os.path.join(vault.directory, file_relative_path), "r") as f:
         return f.read()
 
 
-@mcp.tool(description="Write the contents of a file in a workspace")
-def write_workspace_file(workspace_name: str, file_relative_path: str, content: str):
-    workspace = workspaces[workspace_name]
-    with open(os.path.join(workspace.directory, file_relative_path), "w") as f:
+@mcp.tool(description="Write the contents of a file in a vault")
+def write_vault_file(vault_name: str, file_relative_path: str, content: str):
+    vault = vaults[vault_name]
+    with open(os.path.join(vault.directory, file_relative_path), "w") as f:
         _ = f.write(content)
 
 
@@ -62,12 +62,12 @@ headers = {
 
 
 @mcp.prompt()
-def add_recipe(recipe_url: str, workspace_name: str):
+def add_recipe(recipe_url: str, vault_name: str):
     response = requests.get(recipe_url, headers=headers)
     html_content = response.text
 
     return f"""\
-Below is the content of a website containing a recipe that I want you to copy to my workspace: `{workspace_name}. Please follow the same format that is used as other recipes in that directory.
+Below is the content of a website containing a recipe that I want you to copy to my vault: `{vault_name}. Please follow the same format that is used as other recipes in that directory.
 
 It is very important that you make no mistakes when saving the recipe. Ensure that all ingredients, quantity, and instructions match exactly what is contained on the website.
 

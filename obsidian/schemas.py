@@ -3,12 +3,12 @@ from pydantic import BaseModel
 import os
 
 
-class Workspace(BaseModel):
+class Vault(BaseModel):
     name: str
     directory: str
     description: str
 
-    def get_workspace_files(self, path: str, recursive: bool):
+    def get_valut_files(self, path: str, recursive: bool):
         files: list[File] = []
         if path.startswith("/"):
             path = path[1:]
@@ -26,7 +26,7 @@ class Workspace(BaseModel):
                     files.append(File(relative_path=item_path, is_dir=False))
                 elif os.path.isdir(abs_item_path):
                     if recursive:
-                        sub_files = self.get_workspace_files(item_path, recursive)
+                        sub_files = self.get_valut_files(item_path, recursive)
                         files.extend(sub_files)
                     else:
                         files.append(File(relative_path=item_path, is_dir=True))
