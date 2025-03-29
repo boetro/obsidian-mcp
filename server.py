@@ -75,6 +75,8 @@ Please confirm with me what you will save before commiting it.
 
 Recipe Website Content:
 
+```md
 {md(html_content)}
+```
 
 """
